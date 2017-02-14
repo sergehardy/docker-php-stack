@@ -22,9 +22,11 @@ services:
         links:
             - db:mysqldb
             - redis
+            - xhgui
         volumes:
-            - src:/var/www/symfony
+            - ./src:/var/www/html
             - ./logs/symfony:/var/www/symfony/app/logs
+            - xhgui:/usr/local/src/xhgui
     nginx:
         build: nginx
         ports:
@@ -39,7 +41,7 @@ services:
             - 81:80
         volumes:
             - ./elk/logstash:/etc/logstash
-            - ./elk/logstash/patterns:/opt/logstash/patterns
+            - ./elk /logstash/patterns:/opt/logstash/patterns
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -48,7 +50,17 @@ services:
         links:
           - db
 
+    xhgui:
+        image: inetprocess/xhgui
+        volumes:
+          - xhgui:/usr/local/src/xhgui
+          - ./xhgui-config.php:/usr/local/src/xhgui/config/config.php
+
+        ports:
+          - "9090:80"
+        expose:
+          - 80
 
 
 volumes:
-    src:
+   xhgui:
